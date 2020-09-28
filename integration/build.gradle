@@ -1,0 +1,22 @@
+plugins {
+    id 'groovy'
+}
+
+dependencies {
+	// Use the latest Groovy version for building this library
+	implementation 'org.codehaus.groovy:groovy-all:3.0.4'
+
+	// Use the awesome Spock testing and specification framework
+	testImplementation 'org.spockframework:spock-core:2.0-M3-groovy-3.0'
+    testImplementation "com.agorapulse:gru-http:0.8.4"
+}
+
+task deploy {
+    // stub
+}
+
+test {
+	useJUnitPlatform()
+}
+
+test.dependsOn(rootProject.deploy)

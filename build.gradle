@@ -1,0 +1,76 @@
+import groovy.xml.MarkupBuilder 
+
+plugins {
+  id 'org.hidetake.ssh' version '2.10.1'
+}   
+
+allprojects {
+    repositories {
+        jcenter() 
+    }
+}
+
+subprojects {
+    version = '1.0'
+}
+
+task writeIndex {
+    dependsOn subprojects.collect { ":${it.name}:deploy" }
+    outputs.file "$buildDir/deploy/index.html"
+
+    doLast {
+        def base = "$buildDir/deploy"
+        file("$base/index.html").withPrintWriter { w ->
+            def builder = new MarkupBuilder(w)
+            builder.html {
+                head {
+                    title "FCGI Experiments"
+                }
+                body {
+                    h1 "FCGI Experiments"
+                    ul {
+                        file(base).eachFileRecurse { f -> 
+                            if (f.isFile() && f.name.endsWith("cgi")) {
+                                li {
+                                    a(href: "$f" - base, f.name)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+task deploy {
+    dependsOn writeIndex
+    dependsOn subprojects.collect { ":${it.name}:deploy" }
+    doLast {
+        ssh.run {
+            session(remotes.web) {
+                file("$buildDir/deploy").eachFile { 
+                    put from: it, into: 'www'
+                }
+                execute "find www -type f -iname '*.*cgi' -exec chmod +x '{}' \\;"
+            }
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete buildDir
+}
+
+ssh.settings {
+    fileTransfer = 'scp'
+}
+
+remotes {
+    web {
+        host = 'web'
+        user = 'theuser'
+        identity = new File("dockershare/home/theuser/.ssh/id_ecdsa")
+        knownHosts = addHostKey(file("dockershare/home/theuser/.ssh/known_hosts"))
+    }
+}

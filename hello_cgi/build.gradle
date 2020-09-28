@@ -1,0 +1,35 @@
+plugins {
+    id 'java'  
+    id 'org.mikeneck.graalvm-native-image' version 'v0.8.0'
+}
+
+task deploy(type: Copy) {
+    dependsOn nativeImage
+    from('src/main/perl') {
+        include '*.pl'
+        rename "(.*)\\.pl", '$1.cgi'
+    }
+    from('build/bin') {
+        include '*.cgi'
+    }
+    fileMode 0700
+    into "${parent.buildDir}/deploy/hello_cgi"
+}
+
+nativeImage {
+  graalVmHome = System.getProperty('java.home')
+  mainClass = 'org.ethelred.experiments.HelloCGI'
+  executableName = 'hello_java.cgi'
+  outputDirectory = file("$buildDir/bin")
+  arguments(
+      '--no-fallback',
+      '--report-unsupported-elements-at-runtime',
+      '--verbose',
+      '-J-Xmx4G'
+  )
+}
+
+generateNativeImageConfig {
+  enabled = true
+  byRunningApplicationWithoutArguments()
+}

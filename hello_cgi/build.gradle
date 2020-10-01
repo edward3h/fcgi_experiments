@@ -25,7 +25,8 @@ nativeImage {
       '--no-fallback',
       '--report-unsupported-elements-at-runtime',
       '--verbose',
-      '-J-Xmx4G'
+      '-J-Xmx4G',
+      '--static'
   )
 }
 

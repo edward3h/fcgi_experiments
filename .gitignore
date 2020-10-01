@@ -6,3 +6,6 @@ build
 dockershare
 bin
 .idea
+
+local.gradle
+.local

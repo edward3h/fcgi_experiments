@@ -25,7 +25,7 @@ class RequestsSpec extends Specification {
             "/hello_cgi/hello_perl.cgi" | "Hello World!"
             "/hello_cgi/hello_java.cgi" | "Hello, world!\n"
             "/hello_fcgi/counter_perl.fcgi" | /I have run \d+ times./
-            "/hello_fcgi/hello_java.fcgi" | /Something something/
+//            "/hello_fcgi/hello_java.fcgi" | /Something something/
     }                         
 }
 

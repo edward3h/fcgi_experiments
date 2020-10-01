@@ -2,7 +2,9 @@ import groovy.xml.MarkupBuilder
 
 plugins {
   id 'org.hidetake.ssh' version '2.10.1'
-}   
+}
+
+apply from: 'local.gradle'
 
 allprojects {
     repositories {
@@ -53,6 +55,21 @@ task deploy {
                     put from: it, into: 'www'
                 }
                 execute "find www -type f -iname '*.*cgi' -exec chmod +x '{}' \\;"
+            }
+        }
+    }
+}
+
+task deployLive {
+    dependsOn deploy
+    onlyIf { remotes.hasProperty('live') && project.hasProperty('livedir') }
+    doLast {
+        ssh.run {
+            session(remotes.live) {
+                file("$buildDir/deploy").eachFile {
+                    put from: it, into: "$livedir"
+                }
+                execute "find $livedir -type f -iname '*.*cgi' -exec chmod +x '{}' \\;"
             }
         }
     }

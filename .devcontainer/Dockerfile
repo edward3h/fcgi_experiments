@@ -4,7 +4,7 @@ FROM mcr.microsoft.com/vscode/devcontainers/base:0-${VARIANT}
 
 # [Optional] Uncomment this section to install additional OS packages.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends bash-completion build-essential tree ack-grep vim libfcgi-perl zlib1g-dev
+    && apt-get -y install --no-install-recommends bash-completion build-essential tree ack-grep vim libfcgi-perl zlib1g-dev libfcgi-dev
 
 ENV SDKMAN_DIR=/root/.sdkman
 RUN  curl -s "https://get.sdkman.io" | bash && \

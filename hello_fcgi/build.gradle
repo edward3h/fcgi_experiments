@@ -4,7 +4,6 @@ plugins {
 }
 
 dependencies {
-    implementation group: 'com.github.jnr', name: 'jnr-unixsocket', version: '0.38.1'
     implementation group: 'org.graalvm.sdk', name: 'graal-sdk', version: '20.2.0'
 }
 
@@ -23,8 +22,8 @@ task deploy(type: Copy) {
 
 nativeImage {
   graalVmHome = System.getProperty('java.home')
-  mainClass = 'org.ethelred.experiments.graal.HelloGraal'
-  executableName = 'hello_graal.fcgi'
+  mainClass = 'org.ethelred.experiments.graal.ParamsGraal'
+  executableName = 'params_graal.fcgi'
   outputDirectory = file("$buildDir/bin")
   arguments(
       '--no-fallback',

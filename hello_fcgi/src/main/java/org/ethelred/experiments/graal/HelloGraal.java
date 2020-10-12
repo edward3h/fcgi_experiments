@@ -1,12 +1,9 @@
 package org.ethelred.experiments.graal;
 
 import org.ethelred.experiments.graal.libfcgi.FCGX_Request;
-import org.ethelred.experiments.graal.libfcgi.FCGX_Stream;
 import org.graalvm.nativeimage.StackValue;
 import org.graalvm.nativeimage.c.type.CTypeConversion;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -18,7 +15,6 @@ import static org.ethelred.experiments.graal.libfcgi.LibFCGI.FCGX_Finish_r;
 import static org.ethelred.experiments.graal.libfcgi.LibFCGI.FCGX_GetParam;
 import static org.ethelred.experiments.graal.libfcgi.LibFCGI.FCGX_Init;
 import static org.ethelred.experiments.graal.libfcgi.LibFCGI.FCGX_InitRequest;
-import static org.ethelred.experiments.graal.libfcgi.LibFCGI.FCGX_PutChar;
 
 /**
  * TODO
@@ -88,23 +84,4 @@ public class HelloGraal
         return FCGX_Accept_r(request);
     }
 
-    static class FCGXOutputStream extends OutputStream
-    {
-        private final FCGX_Stream out;
-
-        FCGXOutputStream(FCGX_Stream out)
-        {
-            this.out = out;
-        }
-
-        @Override
-        public void write(int b) throws IOException
-        {
-            int r = FCGX_PutChar(b, out);
-            if (r == -1)
-            {
-                throw new IOException("Error writing output");
-            }
-        }
-    }
 }

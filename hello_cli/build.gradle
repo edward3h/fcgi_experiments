@@ -1,5 +1,6 @@
 plugins {
     id 'java'  
+    id 'application'
     id 'org.mikeneck.graalvm-native-image' version 'v0.8.0'
 }
 
@@ -9,21 +10,17 @@ dependencies {
 
 task deploy(type: Copy) {
     dependsOn nativeImage
-    from('src/main/perl') {
-        include '*.pl'
-        rename "(.*)\\.pl", '$1.fcgi'
-    }
     from('build/bin') {
-        include '*.fcgi'
+        include '*'
     }
     fileMode 0700
-    into "${parent.buildDir}/deploy/hello_fcgi"
+    into "${parent.buildDir}/deploy/hello_cli"
 }
 
 nativeImage {
   graalVmHome = System.getProperty('java.home')
-  mainClass = 'org.ethelred.experiments.graal.ParamsGraal'
-  executableName = 'params_graal.fcgi'
+  mainClass = 'org.ethelred.experiments.cli.Main'
+  executableName = 'hello_cli'
   outputDirectory = file("$buildDir/bin")
   arguments(
       '--no-fallback',
